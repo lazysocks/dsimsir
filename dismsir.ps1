@@ -34,24 +34,24 @@ param (
 
     # Driver Path - Path to drivers
     [Parameter(ParameterSetName="drivers")]
-    [String[]]
+    [String]
     $driversPath = "$PSScriptroot\drivers",
     
     # Filename of Wim Image to Mount
     [Parameter(ParameterSetName="mount")]
     [Parameter(ParameterSetName="split")]
-    [String[]]
+    [String]
     $wimFileName = "$PSScriptroot\boot.wim",
 
     # WIM Image Index
     [Parameter(ParameterSetName="mount")]
-    [Int32[]]
+    [Int32]
     $index = 1,
 
     # Path to Mount Directory
     [Parameter(ParameterSetName="mount")]
     [Parameter(ParameterSetName="dismount")]
-    [String[]]
+    [String]
     $mountPath = "$PSScriptroot\mount",
 
     # Split Action - Split specified WIM
@@ -67,7 +67,7 @@ param (
     # Destination Path
     [Parameter(ParameterSetName="split")]
     [Parameter(ParameterSetName="export")]
-    [String[]]
+    [String]
     $destinationFileName
 
 )
@@ -96,7 +96,7 @@ function trycmd ($cmd) {
 
 function mountWIM {
     Write-Host ("Mounting WIM image $wimFileName")
-    $cmd = Mount-WindowsImage -Path $mountPath -Index $index -ImagePath $wimFileName
+    $cmd = Mount-WindowsImage -Path "${mountPat" -Index $index -ImagePath $wimFileName
     trycmd $cmd
 }
 
