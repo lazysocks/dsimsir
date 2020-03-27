@@ -82,12 +82,12 @@ param (
     # Install Package
     [Parameter(ParameterSetName="packages")]
     [switch]
-    $packages = $false
+    $packages = $false,
 
     # Install Package
     [Parameter(Mandatory=$true, ParameterSetName="packages")]
     [string]
-    $arch     
+    $arch,     
     # Filename of Wim Image to Mount
     [Parameter(ParameterSetName="mount")]
     [Parameter(ParameterSetName="split")]
