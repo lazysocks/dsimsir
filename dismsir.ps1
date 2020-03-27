@@ -1,6 +1,48 @@
+<#
+.SYNOPSIS
+  Utility to manipulate WIM Images
+.DESCRIPTION
+  Used to mount, dismount, split, add drivers to, and add standard confignet packages. 
 
+.PARAMETER mount
+    Mounts specified WIM to default path <script root>\mount or directory specified using -mountPath.
+    Default WIM to mount is <script root>\boot.wim unless otherwise specified using -wimFileName 
+
+.PARAMETER dismount
+    Dismounts specified WIM in default path <script root\mount or directory speficied using -mountPath.
+    Defaults to discard changes, unless -save is used
+
+.PARAMETER split
+    Split specified WIM in default path <script root\boot.wim> unless otherwise specified using -wimFileName
+    
+.PARAMETER export
+    Exports WIM using recovery compression, extension must be *.esd.  Defaults to <script root\boot.esd> unless otherwise specified using -destionationFileName
+
+.PARAMETER clear
+    Will clear any corrupted mounted images
+   
+.INPUTS
+  None.
+.OUTPUTS
+  Split and exported WIM files 
+.NOTES
+  Version:        1.0
+  Author:         Kevin McKinley
+  Creation Date:  3/27/20
+  Purpose/Change: Initial script development
+  
+.EXAMPLE
+ C:\DISMSIR>.\dismsir.ps1 -mount -wimFileName .\wim\CNNMED.wim -index 1 
+
+ .EXAMPLE
+ C:\DISMSIR>.\dismsir.ps1 -dismount -save -mountPath .\mount\
+
+ .EXAMPLE
+ C:\DISMSIR>.\dismsir.ps1 -drivers 
+ C:\DISMSIR>.\dismsir.ps1 -drivers -driversPath .\drivers\
+#>
 #set params
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName="default")]
 param (
     # Mount Action - Mount specified WIM
     [Parameter(ParameterSetName="mount")]
@@ -23,7 +65,7 @@ param (
     $export=$false,
 
     # Clear Action - Clear corrupted mount points - ALL
-    [Parameter()]
+    [Parameter(ParameterSetName="default")]
     [Switch]
     $clear=$false,
 
@@ -36,21 +78,33 @@ param (
     [Parameter(ParameterSetName="drivers")]
     [String]
     $driversPath = "$PSScriptroot\drivers",
-    
+
+    # Install Package
+    [Parameter(ParameterSetName="packages")]
+    [switch]
+    $packages = $false
+
+    # Install Package
+    [Parameter(Mandatory=$true, ParameterSetName="packages")]
+    [string]
+    $arch     
     # Filename of Wim Image to Mount
     [Parameter(ParameterSetName="mount")]
     [Parameter(ParameterSetName="split")]
+    [Parameter(ParameterSetName="export")]
     [String]
-    $wimFileName = "$PSScriptroot\boot.wim",
+    $wimFileName = "$PSScriptroot\wim\boot.wim",
 
     # WIM Image Index
     [Parameter(ParameterSetName="mount")]
+    [Parameter(ParameterSetName="export")]
     [Int32]
     $index = 1,
 
     # Path to Mount Directory
     [Parameter(ParameterSetName="mount")]
     [Parameter(ParameterSetName="dismount")]
+    [Parameter(ParameterSetName="packages")]
     [String]
     $mountPath = "$PSScriptroot\mount",
 
@@ -60,7 +114,7 @@ param (
     $split=$false,
 
     # Split Size
-    [Parameter(Mandatory=$true,ParameterSetName="split")]
+    [Parameter(ParameterSetName="split")]
     [Int64]
     $Size = 4096,
 
@@ -68,7 +122,9 @@ param (
     [Parameter(ParameterSetName="split")]
     [Parameter(ParameterSetName="export")]
     [String]
-    $destinationFileName
+    $destinationFileName = "$PSScriptroot\export\boot.esd"
+
+
 
 )
 
@@ -183,5 +239,9 @@ if ($split -eq $true) {
 
 if ($clear -eq $true) {
     $clearMount
+}
+
+if ($package -eq $true) {
+    installPackages $arch, $stdpackages
 }
 
