@@ -156,7 +156,8 @@ function installPackages($arch, $packages){
 }
 
 function addDrivers {
-    Add-WindowsDriver -Path $mountPath -Driver $driversPath -Recurse
+    $cmd1 = Add-WindowsDriver -Path $mountPath -Driver $driversPath -Recurse -Verbose
+    trycmd $cmd1
 }
 
 
