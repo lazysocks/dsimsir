@@ -152,11 +152,7 @@ function trycmd ($cmd) {
 
 function mountWIM {
     Write-Host ("Mounting WIM image $wimFileName")
-<<<<<<< HEAD
     $cmd = Mount-WindowsImage -Path $mountPath -Index $index -ImagePath $wimFileName
-=======
-    $cmd = Mount-WindowsImage -Path "$mountPath" -Index $index -ImagePath $wimFileName
->>>>>>> 4598a84c658306cc7e68b173dc4fc3074270ce3a
     trycmd $cmd
 }
 
